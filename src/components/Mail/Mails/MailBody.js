@@ -42,7 +42,7 @@ export default function MailBody() {
   async function handleDeleteMail() {
     if (location.pathname.includes('inbox')) {
       const response = await fetch(
-        `https://mail-box-c1237-default-rtdb.firebaseio.com/${email.replace(
+        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
           '.',
           ''
         )}/receivedMails/${mailId}.json`,
@@ -58,7 +58,7 @@ export default function MailBody() {
 
     if (location.pathname.includes('sent')) {
       const response = await fetch(
-        `https://mail-box-c1237-default-rtdb.firebaseio.com/${email.replace(
+        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
           '.',
           ''
         )}/sentMails/${mailId}.json`,
@@ -76,7 +76,7 @@ export default function MailBody() {
   async function handleMarkAsUnread() {
     if (selectedMail.mail.read === true) {
       const response = await fetch(
-        `https://mail-box-c1237-default-rtdb.firebaseio.com/${email.replace(
+        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
           '.',
           ''
         )}/receivedMails/${mailId}.json`,

@@ -15,7 +15,7 @@ export default function RootPage() {
 
   const fetchReceivedMails = useCallback(async () => {
     const response = await fetch(
-      `https://mail-box-c1237-default-rtdb.firebaseio.com/${email.replace(
+      `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
         '.',
         ''
       )}/receivedMails.json`
@@ -49,7 +49,7 @@ export default function RootPage() {
   const fetchSentMails = useCallback(async () => {
     dispatch(toggleSpinner(true));
     const response = await fetch(
-      `https://mail-box-c1237-default-rtdb.firebaseio.com/${email.replace(
+      `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
         '.',
         ''
       )}/sentMails.json`

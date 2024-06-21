@@ -12,7 +12,7 @@ export default function MailList(props) {
   async function handleMailClick() {
     if (mail.read === false) {
       const response = await fetch(
-        `https://mail-box-c1237-default-rtdb.firebaseio.com/${email.replace(
+        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
           '.',
           ''
         )}/receivedMails/${props.id}.json`,

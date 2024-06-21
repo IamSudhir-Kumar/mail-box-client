@@ -29,7 +29,7 @@ export default function LoginForm() {
     dispatch(toggleSpinner(true));
     try {
       const response = await fetch(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBwgAJkZjV9L9mIKI7CySOf8mrvtrZ3rOQ',
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD3XRWmzZAAAScrnZoRbSMmwClz7JjSUH4',
         {
           method: 'POST',
           body: JSON.stringify({

@@ -52,7 +52,7 @@ export default function ComposeMail() {
 
     async function sendMail() {
       const response = await fetch(
-        `https://mail-box-c1237-default-rtdb.firebaseio.com/${email.replace(
+        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
           '.',
           ''
         )}/sentMails.json`,
@@ -67,7 +67,7 @@ export default function ComposeMail() {
         dispatch(setSentMails({ id: data.name, mail: mailDetails }));
         navigate('/mail/sent');
         await fetch(
-          `https://mail-box-c1237-default-rtdb.firebaseio.com/${toMailRef.current.value.replace(
+          `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${toMailRef.current.value.replace(
             '.',
             ''
           )}/receivedMails.json`,
