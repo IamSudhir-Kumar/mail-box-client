@@ -14,7 +14,7 @@ export default function MobileSidebar(props) {
       id="hidden"
     >
       <div className="flex justify-between items-center">
-        <h1 className="font-bold text-3xl text-white">Rmail</h1>
+        <h1 className="font-bold text-3xl text-white">Mail-Client</h1>
         <button onClick={hideSideBar}>
           <XmarkIcon className="text-white" />
         </button>
