@@ -4,9 +4,7 @@ import { markAsRead } from '../../../reducers/emailSlice';
 
 export default function MailList(props) {
   const { id, mail, label } = props;
-
   const { email } = useSelector((state) => state.authState.loggedUser);
-
   const dispatch = useDispatch();
 
   async function handleMailClick() {
@@ -29,22 +27,24 @@ export default function MailList(props) {
 
   return (
     <Link
-      className={mail.read === false ? 'font-semibold' : 'font-normal'}
+      className={`block px-4 py-3 border-b flex justify-between items-center ${
+        mail.read === false ? 'font-semibold hover:bg-blue-50' : 'hover:bg-gray-50'
+      }`}
       to={`${id}`}
       onClick={handleMailClick}
     >
-      <li className="px-2 py-3 border-b flex justify-between items-center gap-3 sm:gap-36 hover:bg-blue-50">
-        <div className="basis-32 sm:basis-52 overflow-hidden whitespace-nowrap text-ellipsis">
-          {mail.read === false && (
-            <div className="inline-block mr-2 h-2.5 w-2.5 rounded-full bg-blue-700"></div>
-          )}
-          <span className="text-slate-500 text-sm">{label}</span>{' '}
-          <span>{label === 'To:' ? mail.to : mail.from}</span>
+      <div className="flex items-center gap-2 flex-1">
+        {mail.read === false && (
+          <div className="w-2.5 h-2.5 rounded-full bg-blue-700"></div>
+        )}
+        <div className="overflow-hidden whitespace-nowrap flex-1">
+          <span className="text-sm text-gray-500">{label}</span>{' '}
+          <span className="text-sm truncate">{label === 'To:' ? mail.to : mail.from}</span>
         </div>
-        <span className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis">
-          {mail.subject}
-        </span>
-      </li>
+      </div>
+      <div className="flex-1 overflow-hidden whitespace-nowrap text-sm truncate">
+        {mail.subject}
+      </div>
     </Link>
   );
 }

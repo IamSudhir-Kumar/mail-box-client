@@ -21,7 +21,7 @@ export default function LoginForm() {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (!emailRef || !password) {
+    if (!email || !password) {
       toast.error('Please enter the required details');
       return;
     }
@@ -57,16 +57,16 @@ export default function LoginForm() {
   }, []);
 
   return (
-    <form onSubmit={handleFormSubmit}>
+    <form onSubmit={handleFormSubmit} className="bg-white p-8 rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
       <div className="mb-6">
         <label
-          className="block font-semibold text-sm text-gray-800 mb-1"
+          className="block font-semibold text-sm text-red-800 mb-2"
           htmlFor="email"
         >
           Email
         </label>
         <input
-          className="ring-1 ring-inset ring-gray-300 w-full py-1 px-2 rounded-md shadow-sm focus:outline-blue-700 autofill:bg-yellow-200"
+          className="ring-2 ring-red-300 w-full py-2 px-3 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 autofill:bg-red-100"
           type="email"
           id="email"
           ref={emailRef}
@@ -75,20 +75,20 @@ export default function LoginForm() {
       <div className="mb-6">
         <div className="flex justify-between items-center">
           <label
-            className="block font-semibold text-sm text-gray-800 mb-1 flex-grow"
+            className="block font-semibold text-sm text-red-800 mb-2 flex-grow"
             htmlFor="password"
           >
             Password
           </label>
           <Link
-            className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+            className="text-sm font-semibold text-orange-600 hover:text-orange-700"
             to="/forgot-password"
           >
             Forgot password?
           </Link>
         </div>
         <input
-          className="ring-1 ring-inset ring-gray-300 w-full py-1 px-2 rounded-md shadow-sm focus:outline-blue-700"
+          className="ring-2 ring-red-300 w-full py-2 px-3 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 autofill:bg-red-100"
           type="password"
           id="password"
           ref={passwordRef}
@@ -96,7 +96,7 @@ export default function LoginForm() {
       </div>
       <div className="mb-6">
         <button
-          className="rounded-md py-2 w-full text-sm text-center font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 focus:outline-blue-700 focus:outline-offset-2"
+          className="rounded-md py-2 w-full text-sm text-center font-semibold text-white bg-orange-600 hover:bg-orange-700 active:bg-orange-800 focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-300"
           type="submit"
         >
           {spinner ? <Spinner /> : 'Login'}

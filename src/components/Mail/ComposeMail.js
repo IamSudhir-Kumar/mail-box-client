@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
 import MailEditor from './MailEditor';
 import { setSentMails } from '../../reducers/emailSlice';
 
@@ -10,14 +9,12 @@ export default function ComposeMail() {
   const { email } = useSelector((state) => state.authState.loggedUser);
 
   const [isValid, setIsValid] = useState(true);
-
   const toMailRef = useRef();
   const subjectRef = useRef();
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   let content;
+
   function handleDoneEditing(mailContent) {
     content = mailContent.content;
   }
@@ -26,7 +23,7 @@ export default function ComposeMail() {
     setIsValid(true);
   }
 
-  function handleSendEmail() {
+  async function handleSendEmail() {
     const enteredToMail = toMailRef.current.value;
     const enteredSubject = subjectRef.current.value;
 
@@ -34,10 +31,12 @@ export default function ComposeMail() {
       setIsValid(false);
       return;
     }
+
     if (!enteredToMail.includes('@')) {
       setIsValid(false);
       return;
     }
+
     if (!content) {
       toast.warning('Did you forget to write the content of mail?');
       return;
@@ -50,70 +49,64 @@ export default function ComposeMail() {
       content: content,
     };
 
-    async function sendMail() {
+    try {
       const response = await fetch(
-        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
-          '.',
-          ''
-        )}/sentMails.json`,
+        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace('.', '')}/sentMails.json`,
         {
           method: 'POST',
           body: JSON.stringify(mailDetails),
         }
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        dispatch(setSentMails({ id: data.name, mail: mailDetails }));
-        navigate('/mail/sent');
-        await fetch(
-          `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${toMailRef.current.value.replace(
-            '.',
-            ''
-          )}/receivedMails.json`,
-          {
-            method: 'POST',
-            body: JSON.stringify({ ...mailDetails, read: false }),
-          }
-        );
+      if (!response.ok) {
+        throw new Error('Failed to send mail');
       }
+
+      const data = await response.json();
+      dispatch(setSentMails({ id: data.name, mail: mailDetails }));
+
+      await fetch(
+        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${enteredToMail.replace('.', '')}/receivedMails.json`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ ...mailDetails, read: false }),
+        }
+      );
+
+      navigate('/mail/sent');
+    } catch (error) {
+      console.error('Error sending mail:', error);
+      toast.error('Failed to send mail. Please try again later.');
     }
-    sendMail();
   }
 
   return (
-    <div className="w-11/12 m-auto rounded overflow-hidden sm:w-auto sm:mx-2">
-      <div className="p-1 bg-blue-600 text-white">
+    <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-4">
+      <div className="p-1 bg-blue-600 text-white flex items-center justify-between">
         <span>New Message</span>
-        <button className="float-end mr-2" onClick={() => navigate(-1)}>
+        <button className="text-white" onClick={() => navigate(-1)}>
           ✕
         </button>
       </div>
-      <div className="min-h-96 p-1 flex flex-col border rounded-b">
-        <div className="border-b p-1 flex items-center">
-          <label
-            className="text-sm font-semibold text-slate-600"
-            htmlFor="from"
-          >
+      <div className="p-4 border rounded-b">
+        <div className="flex items-center mb-2">
+          <label className="text-sm font-semibold text-gray-600" htmlFor="from">
             From:
           </label>
           <input
-            className="px-2 flex-1 focus:outline-none"
+            className="px-2 flex-1 focus:outline-none ml-2"
             type="text"
             id="from"
             defaultValue={email}
             readOnly
           />
         </div>
-        <div className="border-b flex p-1 items-center">
-          <label
-            className="font-semibold text-sm text-slate-600"
-            htmlFor="email"
-          >
+        <div className="flex items-center mb-2">
+          <label className="text-sm font-semibold text-gray-600" htmlFor="email">
             To:
           </label>
           <input
-            className={`flex-1 px-2 focus:outline-none ${
+            className={`px-2 flex-1 focus:outline-none ml-2 ${
               !isValid ? 'bg-red-200' : ''
             }`}
             type="email"
@@ -121,21 +114,17 @@ export default function ComposeMail() {
             onChange={handleToMailChange}
             ref={toMailRef}
           />
-          <div className="text-slate-400 text-sm">
+          <div className="text-sm text-gray-600 ml-2">
             <span className="mr-1">Cc</span>
             <span>Bcc</span>
           </div>
         </div>
-
-        <div className="border-b p-1 flex items-center">
-          <label
-            className="text-sm font-semibold text-slate-600"
-            htmlFor="subject"
-          >
+        <div className="flex items-center mb-2">
+          <label className="text-sm font-semibold text-gray-600" htmlFor="subject">
             Subject:
           </label>
           <input
-            className={`flex-1 px-2 focus:outline-none ${
+            className={`px-2 flex-1 focus:outline-none ml-2 ${
               !isValid ? 'bg-red-200' : ''
             }`}
             type="text"
@@ -144,9 +133,9 @@ export default function ComposeMail() {
           />
         </div>
         <MailEditor onDoneEditing={handleDoneEditing} />
-        <div className="p-1">
+        <div className="flex justify-end mt-4">
           <button
-            className="rounded px-2 py-1 font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 focus:outline-blue-700 focus:outline-offset-2"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
             onClick={handleSendEmail}
           >
             Send

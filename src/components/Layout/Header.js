@@ -14,9 +14,9 @@ export default function Header() {
   const unreadMails = useSelector((state) => state.emailState.unreadMails);
 
   return (
-    <header className="h-12 shadow-md">
-      <div className="w-full flex justify-between items-center py-2 px-5 bg-blue-50 fixed z-30">
-        <h1 className="hidden sm:block font-semibold text-2xl text-gray-700">
+    <header className="h-16 shadow-md bg-gradient-to-r from-blue-500 to-teal-400">
+      <div className="w-full flex justify-between items-center py-3 px-6 fixed z-30">
+        <h1 className="hidden sm:block font-bold text-3xl text-white">
           Rmail
         </h1>
         <button
@@ -25,17 +25,17 @@ export default function Header() {
             document.getElementById('hidden').classList.toggle('hidden');
           }}
         >
-          <MenuBarIcon />
+          <MenuBarIcon className="text-white" />
         </button>
         <div>
-          <img className="rounded-full w-8" src={mailIcon} alt="mail icon" />
+          <img className="rounded-full w-10 animate-pulse" src={mailIcon} alt="mail icon" />
         </div>
 
         <button
-          className="w-8 h-8 rounded-full border-2 hover:border-blue-300 focus:outline-blue-400 focus:outline-offset-2"
+          className="w-10 h-10 rounded-full border-2 border-transparent hover:border-white focus:outline-none focus:border-white"
           onClick={() => setShowProfile(!showProfile)}
         >
-          <img className="rounded-full" src={profileIcon} alt="" />
+          <img className="rounded-full" src={profileIcon} alt="Profile" />
         </button>
       </div>
       {showProfile && (

@@ -1,21 +1,16 @@
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import styles from '../MailEditor.module.css';
-
 import { useSelector, useDispatch } from 'react-redux';
 import {
   deleteReceivedMails,
   deleteSentMails,
   markAsUnread,
 } from '../../../reducers/emailSlice';
-
 import { BackArrow, DeleteIcon, MarkAsUnread } from '../../../assets/Icons';
 
 export default function MailBody() {
   const { mailId } = useParams();
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +22,7 @@ export default function MailBody() {
   if (!sentMails.length && !receivedMails.length) {
     if (location.pathname.includes('inbox')) navigate('/mail/inbox');
     if (location.pathname.includes('sent')) navigate('/mail/sent');
-    return;
+    return null;
   }
 
   const allMails = [...sentMails, ...receivedMails];
@@ -36,37 +31,32 @@ export default function MailBody() {
   if (!selectedMail) {
     if (location.pathname.includes('inbox')) navigate('/mail/inbox');
     if (location.pathname.includes('sent')) navigate('/mail/sent');
-    return;
+    return null;
   }
 
   async function handleDeleteMail() {
+    let apiUrl = '';
     if (location.pathname.includes('inbox')) {
-      const response = await fetch(
-        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
-          '.',
-          ''
-        )}/receivedMails/${mailId}.json`,
-        {
-          method: 'DELETE',
-        }
-      );
-      if (response.ok) {
-        dispatch(deleteReceivedMails(mailId));
-        navigate('/mail/inbox');
-      }
+      apiUrl = `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
+        '.',
+        ''
+      )}/receivedMails/${mailId}.json`;
+    } else if (location.pathname.includes('sent')) {
+      apiUrl = `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
+        '.',
+        ''
+      )}/sentMails/${mailId}.json`;
     }
 
-    if (location.pathname.includes('sent')) {
-      const response = await fetch(
-        `https://fir-frontend-7c7f1-default-rtdb.firebaseio.com/${email.replace(
-          '.',
-          ''
-        )}/sentMails/${mailId}.json`,
-        {
-          method: 'DELETE',
-        }
-      );
-      if (response.ok) {
+    const response = await fetch(apiUrl, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      if (location.pathname.includes('inbox')) {
+        dispatch(deleteReceivedMails(mailId));
+        navigate('/mail/inbox');
+      } else if (location.pathname.includes('sent')) {
         dispatch(deleteSentMails(mailId));
         navigate('/mail/sent');
       }
@@ -92,42 +82,42 @@ export default function MailBody() {
   }
 
   return (
-    <div className="w-11/12 m-auto rounded overflow-hidden sm:w-auto sm:mx-2">
-      <header className="p-1 border-b flex justify-between items-center">
+    <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-4">
+      <header className="flex justify-between items-center mb-4">
         <button
-          className="rounded-full p-2 hover:bg-gray-100 active:bg-gray-200 duration-300"
+          className="p-2 rounded-full hover:bg-gray-100 duration-300"
           onClick={() => navigate(-1)}
         >
           <BackArrow className="w-6" />
         </button>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           {location.pathname.includes('inbox') && (
             <button
-              className="rounded-full p-2 hover:bg-gray-100 active:bg-gray-200 duration-300"
+              className="p-2 rounded-full hover:bg-gray-100 duration-300"
               onClick={handleMarkAsUnread}
             >
               <MarkAsUnread className="w-6" />
             </button>
           )}
           <button
-            className="rounded-full p-3 hover:bg-gray-100 active:bg-gray-200 duration-300"
+            className="p-2 rounded-full hover:bg-gray-100 duration-300"
             onClick={handleDeleteMail}
           >
-            <DeleteIcon className="w-4" />
+            <DeleteIcon className="w-6" />
           </button>
         </div>
       </header>
-      <section className="p-3">
-        <div className="mb-5 mt-2">
-          <h1 className="text-xlfont-medium">{selectedMail.mail.subject}</h1>
-          <p className="text-sm text-slate-700">
+      <section>
+        <div className="mb-4">
+          <h1 className="text-xl font-semibold">{selectedMail.mail.subject}</h1>
+          <p className="text-sm text-gray-500">
             {location.pathname.includes('inbox')
               ? `<${selectedMail.mail.from}>`
               : `<${selectedMail.mail.to}>`}
           </p>
         </div>
         <Editor
-          editorClassName={styles.readOnly}
+          editorClassName="wysiwyg-editor"
           initialContentState={selectedMail.mail.content}
           readOnly
           toolbarHidden
